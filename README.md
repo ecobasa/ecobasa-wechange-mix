@@ -7,25 +7,37 @@ Repository of the future http://ecobasa.org
 * PostgreSQL
 * LESS (use node.js Grunt or Compass to compile CSS)
 
-ecobasa
-=========================
 
-This is the base project for wechange. It is mainly a configurable shell for the actual wechange apps, which are pluggable components. Most of the actual code resides in "cosinnus-core". See `requirements_staging.txt` for a full list of internal apps.
+This is the base project for ecobasa. 
+We are working with https://wechange.de
+
+The ecobasa repository is mainly a configurable shell for the wechange apps we use, which are pluggable components. Most of the actual code resides in "cosinnus-core". See `requirements_staging.txt` for a full list of internal apps. ecobasa is built on top of wechange and extends the models and apps with its own data and interface.
 
 Note: The wechange project is often refered to as "neww" in code and imports and the internal apps and python Objects are named "cosinnus" for historical reasons. 
 
-# How to set up local development for wechange
+# How to set up local development for ecobasa
 
-This will set up a local development envirenment, getting you ready to work on wechange and all its internal apps.
+This will set up a local development envirenment, getting you ready to work on ecobasa and all its internal apps.
 
-Note: Wechange still runs on Python 2.7.15 using Django 1.8, but we are in the process of upgrading to Python 3 and Django >= 2.0!
+Note: ecobasa still runs on Python 2.7.15 using Django 1.8, but we are in the process of upgrading to Python 3 and Django >= 2.0!
 
 
 ### Install PostgresSql 
 
 * Install PostgreSql for your system 
-* Create new psql database. Name it "wechange" or similar and note its password and user
+
+We use PostgreSQL: http://www.postgresql.org/
+For OSX we recommend: http://postgresapp.com/
+See http://od-eon.com/blogs/calvin/postgresql-cheat-sheet-beginners/
+
+* Create new psql database. Name it "ecobasa" or similar and note its password and user
   * you can use the root psql user, but we advise you to use a different one
+
+for a bit of setup info. Basically:
+
+	$ sudo su - postgres
+	$ createuser django -P # enter password, answer no to all questions
+	$ createdb -E utf8 -O django ecobasa -T template0
   
 ### Install Python, Pip and Virtualenv
  
@@ -80,7 +92,7 @@ Note: Wechange still runs on Python 2.7.15 using Django 1.8, but we are in the p
   * enter the credentials for your local user
   * the username doesn't matter, you will log in using the email as credential
 
-### First-Time Wechange Setup
+### First-Time ecobasa Setup
 
 * navigate to `http://localhost:8000/admin` and log in with the email address and password you just created
   * navigate to `http://localhost:8000/admin/sites/site/1/` and change the default Site to 
@@ -90,7 +102,7 @@ Note: Wechange still runs on Python 2.7.15 using Django 1.8, but we are in the p
 
 ### First-Time Wagtail Setup
 
-We use Wagtail as CMS, and it will show up automatically as a root URL dashboard. You can skip this step configuring it, but all you will see on your root URL will be a blank page. Navigate to a page like `http://localhost:8000/projects/` to see the wechange-page.
+We use Wagtail as CMS, and it will show up automatically as a root URL dashboard. You can skip this step configuring it, but all you will see on your root URL will be a blank page. Navigate to a page like `http://localhost:8000/communities/` to see the ecobasa map.
 
 * navigate to `http://localhost:8000/cms-admin/pages/`
   * Delete the page "Welcome to your new Wagtail Site"
@@ -126,13 +138,13 @@ We use Wagtail as CMS, and it will show up automatically as a root URL dashboard
 
 # Git Structure
 
-NEWW pulls Cosinnus-core and all cosinnus apps in directly from their Git repositories. See `requirements_staging.txt` for the repo locations and used branches.
+ecobasa pulls Cosinnus-core and all cosinnus apps in directly from their Git repositories. See `requirements_staging.txt` for the repo locations and used branches.
 
 # Deployment
 
-Deployment is automated with a comprehensive fab-file. Check wechange/fabfile.py!
+Deployment is automated with a comprehensive fab-file. Check ecobasa/fabfile.py!
 
-When deploying using `fab staging`, the wechange and **all** the cosinnus projects will be deployed using their staging-branches! Same goes for production.
+When deploying using `fab staging`, the ecobasa and **all** the cosinnus projects will be deployed using their staging-branches! Same goes for production.
 
 * To deploy to staging use:
   * `fab staging deploy` for a full deploy, shutting down the server, creating a database snapshot, and pulling up an "Under Maintenance" blanket on all URLs.
