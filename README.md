@@ -7,67 +7,137 @@ Repository of the future http://ecobasa.org
 * PostgreSQL
 * LESS (use node.js Grunt or Compass to compile CSS)
 
-Environment Requirements
-------------
+wechange
+=========================
 
-	$ pip install -r requirements_local.txt
+This is the base project for wechange. It is mainly a configurable shell for the actual wechange apps, which are pluggable components. Most of the actual code resides in "cosinnus-core". See `requirements_staging.txt` for a full list of internal apps.
 
+Note: The wechange project is often refered to as "neww" in code and imports and the internal apps and python Objects are named "cosinnus" for historical reasons. 
 
-Database
---------
+# How to set up local development for wechange
 
-We use PostgreSQL: http://www.postgresql.org/
-For OSX we recommend: http://postgresapp.com/
-See http://od-eon.com/blogs/calvin/postgresql-cheat-sheet-beginners/
-for a bit of setup info. Basically:
+This will set up a local development envirenment, getting you ready to work on wechange and all its internal apps.
 
-	$ sudo su - postgres
-	$ createuser django -P # enter password, answer no to all questions
-	$ createdb -E utf8 -O django ecobasa -T template0
-
-As user posgres, you might have to check /etc/postgresql/9.1/main/pg_hba.conf
-if the TYPE 'local' for USER 'all' has METHOD set to 'md5' .
-
-Afterwards you should be able to bootstrap the database as your normal user:
-
-	$ ./manage.py migrate
-	$ ./manage.py createsuperuser
+Note: Wechange still runs on Python 2.7.15 using Django 1.8, but we are in the process of upgrading to Python 3 and Django >= 2.0!
 
 
-Running
--------
+### Install PostgresSql 
 
-Before running in production mode, you should collect the static files:
+* Install PostgreSql for your system 
+* Create new psql database. Name it "wechange" or similar and note its password and user
+  * you can use the root psql user, but we advise you to use a different one
+  
+### Install Python, Pip and Virtualenv
+ 
+* Install python 2.7.15. Please refer to external guides if you are unsure how to do this for your system!
+  * It is important that the python version is 2.7.15 exactly!
+* `pip install --upgrade pip` - Upgrade pip. Don't skip this step!
+* `pip install virtualenv` - Install virtualenv
 
-	$ ./manage.py collectstatic
+### Install Git
 
-which will collect all apps' static files into the directory static/ .
+* Install a git client. Please refer to external guides if you are unsure how to do this for your system!
+
+### Create a virtualenv and project folders
+ 
+* `virtualenv <your-path>/wechangeenv` - create your virtualenv once
+* `source <your-path>/wechangeenv/bin/activate` - activate your wechange virtualenv (do this in every new console when working on wechange)
+* `mkdir <your-project-folder>/wechange-source` - create the new wechange project location
+* `cd <your-project-folder>/wechange-source`
+
+### Get the wechange and cosinnus source code
+
+* `git clone git@git.sinnwerkstatt.com:wechange/wechange.git wechange`
+* `./wechange/local_install.sh | tee install.log`
+
+### Set up the local wechange source and install all dependencies
+
+* `./wechange/local_setup.sh | tee setup.log`
+  * This sets up all of the cosinnus-projects into individual folders and runs "python setup.py develop". This means that the source of the cosinnus dependency is localized in the same directory, and you can edit the files in there as if it were a source directory.
+* `pip install -r wechange/requirements_local.txt | tee reqs.log`
+  
+**Notes:** 
+
+* For wechange, we install the full set of dependencies via requirements.txt files. These are also used during our deployment and there are different files for local, staging and production environments.
+* We tee the stdout so you can see errors more clearly.
+* Deal with any errors you encounter here! Only move to the next step if you do not get any errors. Warnings are usually ok.
+  * Especially Pillow and some other dependencies are known to cause trouble on some systems! 
+  * if you see any compile errors, often time the solution is to install the offending dependency using a pip Wheel for your system.
+
+### Configure up your local wechange projects
+
+* `cd wechange`
+* `cp neww/settings_local.py neww/settings.py`
+* Edit `neww/settings.py`:
+  * replace the database settings in ``DATABASES['default']``: 
+    * NAME, USER, PASSWORD: based on how you created your psql database
+  * (this settings.py file is in .gitignore)
+
+### One-Time Django Setup 
+  
+* `./manage.py migrate` - creates all the empty database tables
+* `./manage.py createsuperuser` - create your own user account
+  * enter the credentials for your local user
+  * the username doesn't matter, you will log in using the email as credential
+
+### First-Time Wechange Setup
+
+* navigate to `http://localhost:8000/admin` and log in with the email address and password you just created
+  * navigate to `http://localhost:8000/admin/sites/site/1/` and change the default Site to 
+    * domain: localhost:8000
+    * name: Local Site (or anything you wish)
+* restart the server using "ctrl+c" and `./manage.py runserver`
+
+### First-Time Wagtail Setup
+
+We use Wagtail as CMS, and it will show up automatically as a root URL dashboard. You can skip this step configuring it, but all you will see on your root URL will be a blank page. Navigate to a page like `http://localhost:8000/projects/` to see the wechange-page.
+
+* navigate to `http://localhost:8000/cms-admin/pages/`
+  * Delete the page "Welcome to your new Wagtail Site"
+  * create new Subpage on the root level
+    * Tab Inhalt (de): Title: enter "Root"
+    * Tab Förderung: Kurtitel (slug): enter "root"
+    * Tab Einstellungen: Portal: choose "Default Portal"
+    * below in the drop-up: Click "Publish"
+  * Hover over the new "Root" page and click "Add new Subpage"
+    * Choose "Start-Page: Modular"
+    * Tab Inhalt (de): Title: enter "Dashboard"
+    * Tab Förderung: Kurtitel (slug): enter "dashboard"
+    * below in the drop-up: Click "Publish"
+  * In the left side menu, go to Settings > Sites
+    * click "Add Site"
+    * Hostname: localhost:8000
+    * Port: 8000
+    * click Choose Origin Site:
+      * Navigate below Root using ">", choose page "Dashboard"
+    * Check "Default Site" on
+    * click "Save"
+* navigate to `http://localhost:8000/`, you should see the blank CMS dashboard. 
+  * Its content can be edited in the "Dashboard" Page you just created in http://localhost:8000/cms-admin/pages/. 
+
+### Check if you're up-and-running and create the Forum Group
+
+* navigate to `http://localhost:8000/groups/`
+* click "Create Group" in the left sidebar
+  * enter Group Name: "Forum" (must be exact!)
+  * click "Save" below
+* If you get redirected to the Forum's Group Dashboard and "Forum" appears in the top navigation bar, you're all set!
 
 
-Run it:
+# Git Structure
 
-	$ ./manage.py runserver
+NEWW pulls Cosinnus-core and all cosinnus apps in directly from their Git repositories. See `requirements_staging.txt` for the repo locations and used branches.
 
+# Deployment
 
-Set up your Django site
------------------------
+Deployment is automated with a comprehensive fab-file. Check wechange/fabfile.py!
 
-For some features, e.g. user registration to work properly, it is necessary to
-set up a Django site, go to http://localhost:8000/admin/sites/site/1/ and edit
-the appropriate domain and display name (use the super user account created
-earlier to log in).
+When deploying using `fab staging`, the wechange and **all** the cosinnus projects will be deployed using their staging-branches! Same goes for production.
 
-
-If you don't have a site defined in your database and django wants to reference it, you will need to create one.
-
-From a python manage.py shell :
-
-	$ from django.contrib.sites.models import Site
-	$ new_site = Site.objects.create(domain='foo.com', name='foo.com')
-	$ print new_site.id
-
-Now set that site ID in your settings.py to SITE_ID
-
+* To deploy to staging use:
+  * `fab staging deploy` for a full deploy, shutting down the server, creating a database snapshot, and pulling up an "Under Maintenance" blanket on all URLs.
+  * `fab staging hotdeploy` for a non-interruptive deploy. This is faster, creates no backups, and lets the site run as usual.
+    * Note: **hotdeploy** should never be used when new database migrations are being pushed!
 
 
 Set up the special group
