@@ -7,7 +7,7 @@ Repository of the future http://ecobasa.org
 * PostgreSQL
 * LESS (use node.js Grunt or Compass to compile CSS)
 
-wechange
+ecobasa
 =========================
 
 This is the base project for wechange. It is mainly a configurable shell for the actual wechange apps, which are pluggable components. Most of the actual code resides in "cosinnus-core". See `requirements_staging.txt` for a full list of internal apps.
@@ -40,21 +40,21 @@ Note: Wechange still runs on Python 2.7.15 using Django 1.8, but we are in the p
 
 ### Create a virtualenv and project folders
  
-* `virtualenv <your-path>/wechangeenv` - create your virtualenv once
-* `source <your-path>/wechangeenv/bin/activate` - activate your wechange virtualenv (do this in every new console when working on wechange)
-* `mkdir <your-project-folder>/wechange-source` - create the new wechange project location
-* `cd <your-project-folder>/wechange-source`
+* `virtualenv <your-path>/ecobasaenv` - create your virtualenv once
+* `source <your-path>/ecobasaenv/bin/activate` - activate your ecobasa virtualenv (do this in every new console when working on ecobasa)
+* `mkdir <your-project-folder>/ecobasa-source` - create the new ecobasa project location
+* `cd <your-project-folder>/ecobasa-source`
 
-### Get the wechange and cosinnus source code
+### Get the ecobasa and cosinnus source code
 
-* `git clone git@git.sinnwerkstatt.com:wechange/wechange.git wechange`
+* `git clone git@github.com:ecobasa/ecobasa-3.0.git ecobasa`
 * `./ecobasa/local_install.sh | tee install.log`
 
 ### Set up the local wechange source and install all dependencies
 
 * `./ecobasa/local_setup.sh | tee setup.log`
   * This sets up all of the cosinnus-projects into individual folders and runs "python setup.py develop". This means that the source of the cosinnus dependency is localized in the same directory, and you can edit the files in there as if it were a source directory.
-* `pip install -r wechange/requirements_local.txt | tee reqs.log`
+* `pip install -r ecobasa/requirements_local.txt | tee reqs.log`
   
 **Notes:** 
 
@@ -64,11 +64,11 @@ Note: Wechange still runs on Python 2.7.15 using Django 1.8, but we are in the p
   * Especially Pillow and some other dependencies are known to cause trouble on some systems! 
   * if you see any compile errors, often time the solution is to install the offending dependency using a pip Wheel for your system.
 
-### Configure up your local wechange projects
+### Configure up your local ecobasa projects
 
-* `cd wechange`
-* `cp neww/settings_local.py neww/settings.py`
-* Edit `neww/settings.py`:
+* `cd ecobasa`
+* `cp ecobasa/settings_local.py ecobasa/settings.py`
+* Edit `ecobasa/settings.py`:
   * replace the database settings in ``DATABASES['default']``: 
     * NAME, USER, PASSWORD: based on how you created your psql database
   * (this settings.py file is in .gitignore)
