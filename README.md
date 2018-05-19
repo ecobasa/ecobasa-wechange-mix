@@ -48,11 +48,11 @@ Note: Wechange still runs on Python 2.7.15 using Django 1.8, but we are in the p
 ### Get the wechange and cosinnus source code
 
 * `git clone git@git.sinnwerkstatt.com:wechange/wechange.git wechange`
-* `./wechange/local_install.sh | tee install.log`
+* `./ecobasa/local_install.sh | tee install.log`
 
 ### Set up the local wechange source and install all dependencies
 
-* `./wechange/local_setup.sh | tee setup.log`
+* `./ecobasa/local_setup.sh | tee setup.log`
   * This sets up all of the cosinnus-projects into individual folders and runs "python setup.py develop". This means that the source of the cosinnus dependency is localized in the same directory, and you can edit the files in there as if it were a source directory.
 * `pip install -r wechange/requirements_local.txt | tee reqs.log`
   
